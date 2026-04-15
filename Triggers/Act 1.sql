@@ -53,3 +53,18 @@ create trigger aft_upd_show after update on ATRACCION_DIA for each row
         set a.ganancias=a.ganancias+(NEW.ganancias-OLD.ganancias)
         where a.nombre = OLD.nombre_atraccion;
     end;
+
+-- 6
+create trigger bef_ins_artist before insert on ARTISTAS for each row
+    begin
+        declare existe_nif int;
+
+
+        select count(*) into existe_nif
+        from ARTISTAS where nif=NEW.nif_jefe;
+
+        if(existe_nif = 0) then
+            set NEW.nif_jefe = null;
+        end if;
+    end;
+insert into ARTISTAS values ('87754321A','no tiene','jefe','55555555A');

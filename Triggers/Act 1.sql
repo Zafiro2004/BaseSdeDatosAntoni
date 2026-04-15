@@ -11,6 +11,22 @@
 
 INSERT INTO ANIMALES VALUES ('viejito','León',25,200,200,'El gran carnivoro','La grande')
 
+-- 2
+create trigger after_ins_animal after insert on ANIMALES for each row
+    begin
+        -- PASO 1: AVERIGUAR ARTISTA CON MENOS ANIMALES
+        declare nif_encontrado char(9);
+
+        SELECT nif_artista into nif_encontrado
+        from ANIMALES_ARTISTAS
+        group by nif_artista
+        order by count(*) limit 1;
+        -- PASO 2: RELACIONAR EL ANIMAL NUEVO A ESE ARTISTA
+        insert into ANIMALES_ARTISTAS values (NEW.nombre,nif_encontrado);
+    end;
+
+insert into ANIMALES values ('nuevito','León',10,200,200,'El gran carnivoro','La grande');
+
 -- 3 TRES SITUACIONES PARA ACTUALIZAR GANANCIAS
 -- SE HACE UN SHOW DE UNA ATRACCIÓN
 create trigger aft_ins_show after insert on ATRACCION_DIA for each row

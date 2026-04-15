@@ -9,7 +9,7 @@
         end if;
     end;
 
-INSERT INTO ANIMALES VALUES ('viejito','León',25,200,200,'El gran carnivoro','La grande')
+INSERT INTO ANIMALES VALUES ('viejito','León',25,200,200,'El gran carnivoro','La grande');
 
 -- 2
 create trigger after_ins_animal after insert on ANIMALES for each row

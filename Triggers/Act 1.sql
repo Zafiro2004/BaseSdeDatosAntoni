@@ -68,3 +68,24 @@ create trigger bef_ins_artist before insert on ARTISTAS for each row
         end if;
     end;
 insert into ARTISTAS values ('87754321A','no tiene','jefe','55555555A');
+-- 7
+-- 1 PREPARAR NUEVA TABLA
+create table log_circo(
+    id int primary key auto_increment,
+    username varchar(100) default (user()),
+    tablename varchar(100) not null ,
+    operation varchar(100) not null ,
+    old_value varchar(255),
+    new_value varchar(255),
+    datetime  datetime default now()
+)
+-- 2 DESARROLLAR TRIGGER
+CREATE TRIGGER aft_upd_pista_aforo after update on PISTAS for each row
+    begin
+        insert into log_circo (tablename,operation,old_value,new_value) values
+        ('PISTAS','UPDATE',OLD.aforo,NEW.aforo);
+    end;
+
+update PISTAS
+set aforo=400
+where nombre = 'La grande';

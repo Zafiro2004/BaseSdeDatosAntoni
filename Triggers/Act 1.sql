@@ -54,6 +54,26 @@ create trigger aft_upd_show after update on ATRACCION_DIA for each row
         where a.nombre = OLD.nombre_atraccion;
     end;
 
+-- 5
+create trigger num_5 before insert on PISTAS for each row
+    begin
+        if(NEW.aforo not between 10 and 1000) then
+            signal sqlstate '45000'
+            set message_text ='AFORO NO VALIDO';
+        end if;
+    end;
+
+insert into PISTAS values ('La nueva pista',12000);
+
+create trigger num_5b before update on PISTAS for each row
+begin
+    if(NEW.aforo not between 10 and 1000) then
+        signal sqlstate '45000'
+            set message_text ='AFORO NO VALIDO';
+    end if;
+end;
+update PISTAS set aforo=12000 where nombre='La grande';
+
 -- 6
 create trigger bef_ins_artist before insert on ARTISTAS for each row
     begin
@@ -78,7 +98,7 @@ create table log_circo(
     old_value varchar(255),
     new_value varchar(255),
     datetime  datetime default now()
-)
+);
 -- 2 DESARROLLAR TRIGGER
 CREATE TRIGGER aft_upd_pista_aforo after update on PISTAS for each row
     begin
@@ -89,3 +109,18 @@ CREATE TRIGGER aft_upd_pista_aforo after update on PISTAS for each row
 update PISTAS
 set aforo=400
 where nombre = 'La grande';
+
+CREATE TRIGGER aft_ins_pista_aforo AFTER INSERT  ON PISTAS FOR EACH ROW
+    BEGIN
+        insert into log_circo (tablename, operation, old_value, new_value) values
+        ('PISTAS', 'INSERT', '', NEW.aforo);
+    end;
+
+insert into PISTAS values ('La pequenia',100);
+
+CREATE TRIGGER aft_del_pista_aforo AFTER DELETE ON PISTAS FOR EACH ROW
+    BEGIN
+        INSERT INTO log_circo(tablename,operation,old_value,new_value) VALUES (
+        'PISTAS','DELETE',OLD.aforo,'');
+    end;
+delete from PISTAS where nombre = 'La pequenia';
